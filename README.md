@@ -15,6 +15,13 @@ pnpm dev
 
 - [1주차 — 코드 리뷰 & AI 협업 환경 구축](docs/assignments/week-01.md)
 
+## 새 주차 과제 받기
+
+각 주차 과제는 이 메인 레포에 업데이트됩니다. 새 과제가 올라오면 **본인 포크의 `main`을 이 레포(upstream)와 동기화**해 받으세요.
+
+- 간단히: 포크한 GitHub 레포 페이지의 **Sync fork** 버튼.
+- CLI: `git remote add upstream https://github.com/loopers-labs/loop-pack-fe-l2-vol1.git` 등록 후 `git fetch upstream && git switch main && git merge upstream/main`.
+
 ## 제출
 
 1. 이 레포를 **포크**한다.
