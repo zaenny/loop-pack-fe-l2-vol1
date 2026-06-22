@@ -3,6 +3,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import reactHooks from 'eslint-plugin-react-hooks';
 import prettierConfig from 'eslint-config-prettier';
+import importPlugin from 'eslint-plugin-import-x';
 
 export default tseslint.config(
   { ignores: ['dist'] },
@@ -23,6 +24,12 @@ export default tseslint.config(
     },
     plugins: {
       'react-hooks': reactHooks,
+      import: importPlugin,
+    },
+    settings: {
+      'import-x/resolver': {
+        typescript: true,
+      },
     },
     rules: {
       'react-hooks/rules-of-hooks': 'error',
@@ -44,6 +51,7 @@ export default tseslint.config(
       '@typescript-eslint/ban-ts-comment': 'error',
       'no-empty': ['error', { allowEmptyCatch: false }],
       '@typescript-eslint/no-floating-promises': 'error',
+      'import/no-unresolved': 'error',
     },
   },
 );
