@@ -16,6 +16,10 @@ export default tseslint.config(
     languageOptions: {
       ecmaVersion: 2023,
       globals: globals.browser,
+      parserOptions: {
+        project: ['./tsconfig.app.json', './tsconfig.node.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
     plugins: {
       'react-hooks': reactHooks,
@@ -39,6 +43,7 @@ export default tseslint.config(
       'prefer-template': 'error',
       '@typescript-eslint/ban-ts-comment': 'error',
       'no-empty': ['error', { allowEmptyCatch: false }],
+      '@typescript-eslint/no-floating-promises': 'error',
     },
   },
 );
