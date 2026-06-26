@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import type { Address, Coupon, PaymentMethod } from './types';
 import { ADDRESSES, CART, COUPONS, MEMBER, PAST_ORDERS } from './data';
-import { Price } from './Price';
-import { OrderLineRow } from './OrderLineRow';
-import { OrderStatusTag } from './OrderStatusTag';
 import { DeliveryMemo } from './DeliveryMemo';
 import './market.css';
+import { OrderLineRow } from './OrderLineRow';
+import { OrderStatusTag } from './OrderStatusTag';
+import type { Address, Coupon, PaymentMethod } from './types';
 
 const PAYMENT_LABEL: Record<PaymentMethod, string> = {
   card: '신용/체크카드',
@@ -16,6 +15,7 @@ const PAYMENT_LABEL: Record<PaymentMethod, string> = {
 const FREE_SHIPPING_THRESHOLD = 50000;
 const BASE_SHIPPING_FEE = 3000;
 const REMOTE_AREA_SURCHARGE = 3000;
+const VIP_DISCOUNT_RATE = 0.9;
 
 // 배송지 — 접기/펼치기와 선택 요약은 스스로 책임진다.
 // 단, 실제 선택 동작(onSelectAddress)은 AddressForm → AddressField 로 통과시킨다.
@@ -142,7 +142,12 @@ export function CheckoutPage() {
     ? Math.min(pointInput, member.point, itemTotal)
     : 0;
 
-  const finalPrice = itemTotal + shippingFee - couponDiscount - pointDiscount;
+  // 최종 결제 금액 , VIP 할인 적용
+  const basePrice = itemTotal + shippingFee - couponDiscount - pointDiscount;
+  const finalPrice =
+    member.grade === 'VIP'
+      ? Math.round(basePrice * VIP_DISCOUNT_RATE)
+      : basePrice;
 
   const applyCoupon = () => {
     const found = COUPONS.find((c) => c.code === couponCode.trim());
@@ -264,9 +269,17 @@ export function CheckoutPage() {
             isDiscount
           />
         ) : null}
+        {member.grade === 'VIP' ? (
+          <OrderLineRow
+            type="point"
+            label="VIP 할인"
+            amount={basePrice - finalPrice}
+            isDiscount
+          />
+        ) : null}
         <div className="total">
           <span>최종 결제 금액</span>
-          <Price amount={finalPrice} member={member} />
+          <strong>{finalPrice.toLocaleString()}원</strong>
         </div>
       </div>
 
