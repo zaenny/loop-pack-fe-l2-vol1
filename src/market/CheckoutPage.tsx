@@ -13,6 +13,10 @@ const PAYMENT_LABEL: Record<PaymentMethod, string> = {
   kakao: '카카오페이',
 };
 
+const FREE_SHIPPING_THRESHOLD = 50000;
+const BASE_SHIPPING_FEE = 3000;
+const REMOTE_AREA_SURCHARGE = 3000;
+
 // 배송지 — 접기/펼치기와 선택 요약은 스스로 책임진다.
 // 단, 실제 선택 동작(onSelectAddress)은 AddressForm → AddressField 로 통과시킨다.
 function DeliverySection({
@@ -126,9 +130,9 @@ export function CheckoutPage() {
 
   // ── 배송비 정책 ──────────────────────────────
   const itemTotal = cart.reduce((sum, it) => sum + it.price * it.quantity, 0);
-  let shippingFee = 3000;
-  if (itemTotal >= 50000) shippingFee = 0;
-  if (address.isRemote) shippingFee += 3000;
+  let shippingFee = BASE_SHIPPING_FEE;
+  if (itemTotal >= FREE_SHIPPING_THRESHOLD) shippingFee = 0;
+  if (address.isRemote) shippingFee += REMOTE_AREA_SURCHARGE;
 
   // ── 쿠폰 정책 ────────────────────────────────
   const couponDiscount = appliedCoupon ? appliedCoupon.discount : 0;
