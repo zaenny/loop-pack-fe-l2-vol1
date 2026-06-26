@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ADDRESSES, CART, COUPONS, MEMBER } from './data';
-import './market.css';
 import type { Coupon, PaymentMethod } from './types';
 
 const FREE_SHIPPING_THRESHOLD = 50000;
@@ -18,7 +17,6 @@ export function useCheckout() {
   const [usePoint, setUsePoint] = useState(false);
   const [pointInput, setPointInput] = useState(0);
   const [payment, setPayment] = useState<PaymentMethod>('card');
-  const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [agreed, setAgreed] = useState(false);
   const [placed, setPlaced] = useState(false);
   const [memo, setMemo] = useState('');
@@ -75,7 +73,6 @@ export function useCheckout() {
     usePoint,
     pointInput,
     payment,
-    isTermsOpen,
     agreed,
     placed,
     memo,
@@ -84,7 +81,6 @@ export function useCheckout() {
     setUsePoint,
     setPointInput,
     setPayment,
-    setIsTermsOpen,
     setAgreed,
     setMemo,
     setPlaced,

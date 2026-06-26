@@ -111,6 +111,7 @@ function AddressField({
 }
 
 export function CheckoutPage() {
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
   const {
     member,
     cart,
@@ -120,7 +121,6 @@ export function CheckoutPage() {
     usePoint,
     pointInput,
     payment,
-    isTermsOpen,
     agreed,
     placed,
     memo,
@@ -129,7 +129,6 @@ export function CheckoutPage() {
     setUsePoint,
     setPointInput,
     setPayment,
-    setIsTermsOpen,
     setAgreed,
     setMemo,
     setPlaced,
