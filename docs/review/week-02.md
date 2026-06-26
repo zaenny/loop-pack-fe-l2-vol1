@@ -76,7 +76,6 @@
 ---
 
 ### ⑩ children vs slot
-- **위치**: `DeliveryMemo.tsx`
 - **해당 없음** — 배송 메모라는 역할이 명확해서 UI 고정이 문제없음
 
 ---
