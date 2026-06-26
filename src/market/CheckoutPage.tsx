@@ -142,10 +142,7 @@ export function CheckoutPage() {
     ? Math.min(pointInput, member.point, itemTotal)
     : 0;
 
-  // 최종 금액을 state 에 담아둔다.
-  const [finalPrice] = useState(
-    itemTotal + shippingFee - couponDiscount - pointDiscount,
-  );
+  const finalPrice = itemTotal + shippingFee - couponDiscount - pointDiscount;
 
   const applyCoupon = () => {
     const found = COUPONS.find((c) => c.code === couponCode.trim());
