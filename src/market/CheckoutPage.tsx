@@ -6,6 +6,7 @@ import { OrderLineRow } from './OrderLineRow';
 import { OrderStatusTag } from './OrderStatusTag';
 import type { Address, PaymentMethod } from './types';
 import { useCheckout } from './useCheckout';
+import { PriceRow } from './PriceRow';
 
 const PAYMENT_LABEL: Record<PaymentMethod, string> = {
   card: '신용/체크카드',
@@ -177,7 +178,6 @@ export function CheckoutPage() {
         {cart.map((it) => (
           <OrderLineRow
             key={it.id}
-            type="product"
             label={it.name}
             amount={it.price * it.quantity}
             thumbnail={it.thumbnail}
@@ -236,28 +236,21 @@ export function CheckoutPage() {
 
       <div className="section">
         <h2>결제 금액</h2>
-        <OrderLineRow type="subtotal" label="상품 금액" amount={itemTotal} />
-        <OrderLineRow type="shipping" label="배송비" amount={shippingFee} />
+        <PriceRow label="상품 금액" amount={itemTotal} />
+        <PriceRow label="배송비" amount={shippingFee} />
         {appliedCoupon ? (
-          <OrderLineRow
-            type="coupon"
+          <PriceRow
             label="쿠폰 할인"
             amount={couponDiscount}
+            subText={appliedCoupon.label}
             isDiscount
-            couponCode={appliedCoupon.code}
           />
         ) : null}
         {usePoint ? (
-          <OrderLineRow
-            type="point"
-            label="적립금 사용"
-            amount={pointDiscount}
-            isDiscount
-          />
+          <PriceRow label="적립금 사용" amount={pointDiscount} isDiscount />
         ) : null}
         {member.grade === 'VIP' ? (
-          <OrderLineRow
-            type="point"
+          <PriceRow
             label="VIP 할인"
             amount={basePrice - finalPrice}
             isDiscount
