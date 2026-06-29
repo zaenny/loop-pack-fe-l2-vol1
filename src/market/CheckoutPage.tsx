@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import type { Address, Coupon, PaymentMethod } from './types';
-import { ADDRESSES, CART, COUPONS, MEMBER, PAST_ORDERS } from './data';
-import { Price } from './Price';
-import { OrderLineRow } from './OrderLineRow';
-import { OrderStatusTag } from './OrderStatusTag';
+import { ADDRESSES, PAST_ORDERS } from './data';
 import { DeliveryMemo } from './DeliveryMemo';
 import './market.css';
+import { OrderLineRow } from './OrderLineRow';
+import { OrderStatusTag } from './OrderStatusTag';
+import type { Address, PaymentMethod } from './types';
+import { useCheckout } from './useCheckout';
+import { PriceRow } from './PriceRow';
 
 const PAYMENT_LABEL: Record<PaymentMethod, string> = {
   card: '신용/체크카드',
@@ -26,6 +27,7 @@ function DeliverySection({
 }) {
   const [expanded, setExpanded] = useState(false);
   const selected = addresses.find((a) => a.id === selectedAddressId)!;
+
   return (
     <div className="section">
       <div className="row between">
@@ -109,46 +111,36 @@ function AddressField({
 }
 
 export function CheckoutPage() {
-  const member = MEMBER;
-  const cart = CART;
-
-  const [selectedAddressId, setSelectedAddressId] = useState(ADDRESSES[0].id);
-  const [couponCode, setCouponCode] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
-  const [usePoint, setUsePoint] = useState(false);
-  const [pointInput, setPointInput] = useState(0);
-  const [payment, setPayment] = useState<PaymentMethod>('card');
   const [isTermsOpen, setIsTermsOpen] = useState(false);
-  const [agreed, setAgreed] = useState(false);
-  const [placed, setPlaced] = useState(false);
-
-  const address = ADDRESSES.find((a) => a.id === selectedAddressId)!;
-
-  // ── 배송비 정책 ──────────────────────────────
-  const itemTotal = cart.reduce((sum, it) => sum + it.price * it.quantity, 0);
-  let shippingFee = 3000;
-  if (itemTotal >= 50000) shippingFee = 0;
-  if (address.isRemote) shippingFee += 3000;
-
-  // ── 쿠폰 정책 ────────────────────────────────
-  const couponDiscount = appliedCoupon ? appliedCoupon.discount : 0;
-
-  // ── 적립금 정책 ──────────────────────────────
-  const pointDiscount = usePoint
-    ? Math.min(pointInput, member.point, itemTotal)
-    : 0;
-
-  // 최종 금액을 state 에 담아둔다.
-  const [finalPrice] = useState(
-    itemTotal + shippingFee - couponDiscount - pointDiscount,
-  );
-
-  const applyCoupon = () => {
-    const found = COUPONS.find((c) => c.code === couponCode.trim());
-    setAppliedCoupon(found ?? null);
-    if (!found) alert('존재하지 않는 쿠폰이에요');
-  };
-
+  const {
+    member,
+    cart,
+    selectedAddressId,
+    couponCode,
+    appliedCoupon,
+    usePoint,
+    pointInput,
+    payment,
+    agreed,
+    placed,
+    memo,
+    setSelectedAddressId,
+    setCouponCode,
+    setUsePoint,
+    setPointInput,
+    setPayment,
+    setAgreed,
+    setMemo,
+    setPlaced,
+    itemTotal,
+    shippingFee,
+    couponDiscount,
+    pointDiscount,
+    basePrice,
+    finalPrice,
+    applyCoupon,
+    handleSubmit,
+  } = useCheckout();
   if (placed) {
     return (
       <div className="checkout">
@@ -177,7 +169,7 @@ export function CheckoutPage() {
 
       <div className="section">
         <h2>배송 요청사항</h2>
-        <DeliveryMemo />
+        <DeliveryMemo value={memo} onChange={setMemo} />
       </div>
 
       <div className="section">
@@ -185,7 +177,6 @@ export function CheckoutPage() {
         {cart.map((it) => (
           <OrderLineRow
             key={it.id}
-            type="product"
             label={it.name}
             amount={it.price * it.quantity}
             thumbnail={it.thumbnail}
@@ -244,28 +235,29 @@ export function CheckoutPage() {
 
       <div className="section">
         <h2>결제 금액</h2>
-        <OrderLineRow type="subtotal" label="상품 금액" amount={itemTotal} />
-        <OrderLineRow type="shipping" label="배송비" amount={shippingFee} />
+        <PriceRow label="상품 금액" amount={itemTotal} />
+        <PriceRow label="배송비" amount={shippingFee} />
         {appliedCoupon ? (
-          <OrderLineRow
-            type="coupon"
+          <PriceRow
             label="쿠폰 할인"
             amount={couponDiscount}
+            subText={appliedCoupon.label}
             isDiscount
-            couponCode={appliedCoupon.code}
           />
         ) : null}
         {usePoint ? (
-          <OrderLineRow
-            type="point"
-            label="적립금 사용"
-            amount={pointDiscount}
+          <PriceRow label="적립금 사용" amount={pointDiscount} isDiscount />
+        ) : null}
+        {member.grade === 'VIP' ? (
+          <PriceRow
+            label="VIP 할인"
+            amount={basePrice - finalPrice}
             isDiscount
           />
         ) : null}
         <div className="total">
           <span>최종 결제 금액</span>
-          <Price amount={finalPrice} member={member} />
+          <strong>{finalPrice.toLocaleString()}원</strong>
         </div>
       </div>
 
@@ -283,11 +275,7 @@ export function CheckoutPage() {
         </button>
       </div>
 
-      <button
-        className="pay"
-        disabled={!agreed}
-        onClick={() => setPlaced(true)}
-      >
+      <button className="pay" disabled={!agreed} onClick={handleSubmit}>
         {finalPrice.toLocaleString()}원 결제하기
       </button>
 
@@ -309,13 +297,7 @@ export function CheckoutPage() {
         {PAST_ORDERS.map((o) => (
           <div key={o.id} className="line">
             <div className="grow">{o.summary}</div>
-            <OrderStatusTag
-              isPaid={o.status === 'paid'}
-              isPreparing={o.status === 'preparing'}
-              isShipped={o.status === 'shipped'}
-              isDelivered={o.status === 'delivered'}
-              isCancelled={o.status === 'cancelled'}
-            />
+            <OrderStatusTag status={o.status} />
           </div>
         ))}
       </div>
