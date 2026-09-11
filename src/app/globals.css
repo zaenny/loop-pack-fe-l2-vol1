@@ -1,3 +1,5 @@
+@import 'tailwindcss';
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -31,12 +33,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
 a {
   color: inherit;
   text-decoration: none;
@@ -45,5 +41,262 @@ a {
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+  }
+}
+
+.week05-page {
+  width: min(100% - 32px, 1200px);
+  margin: 0 auto;
+  padding: 24px 0 64px;
+}
+
+.week05-header,
+.week05-header nav,
+.week05-categories,
+.week05-filters,
+.week05-pagination,
+.week05-product > div:last-child {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.week05-header {
+  justify-content: space-between;
+  padding-bottom: 24px;
+}
+
+.week05-hero {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 32px;
+  background: #ececec;
+}
+
+.week05-section {
+  margin-top: 40px;
+}
+
+.week05-section > h1,
+.week05-section > h2 {
+  margin-bottom: 16px;
+}
+
+.week05-error {
+  color: #c0392b;
+}
+
+.week05-categories a,
+.week05-product button,
+.week05-pagination button,
+.week05-error button,
+.week09-auth-form button,
+.week09-checkout-summary button {
+  padding: 8px 12px;
+  border: 1px solid #c8c8c8;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.week05-error button {
+  color: var(--foreground);
+}
+
+.week05-product button:hover,
+.week09-auth-form button:hover,
+.week09-checkout-summary button:hover {
+  background: #f0f0f0;
+}
+
+.week09-auth-form button:disabled,
+.week09-checkout-summary button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.week09-order-page {
+  /* .week05-page(min(100% - 32px, 1200px))와 같은 공식, 최대값만 2/3(800px)로 */
+  width: min(100% - 32px, 800px);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.week09-order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.week09-order-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid #c8c8c8;
+  padding: 12px;
+}
+
+.week09-order-item img {
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.week09-order-item-info {
+  display: grid;
+  gap: 4px;
+}
+
+.week09-checkout-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.week05-product button:active {
+  background: #e0e0e0;
+}
+
+.week05-product button[aria-pressed="true"] {
+  background: #222;
+  color: #fff;
+  border-color: #222;
+}
+
+.week05-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.week05-product {
+  display: grid;
+  gap: 8px;
+}
+
+.week05-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  background: #ececec;
+  object-fit: cover;
+}
+
+.week05-filters label {
+  display: grid;
+  gap: 6px;
+}
+
+.week05-filters input,
+.week05-filters select {
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #c8c8c8;
+  background: transparent;
+  color: inherit;
+}
+
+.week05-pagination {
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.week05-page a:focus-visible,
+.week05-page button:focus-visible,
+.week05-page input:focus-visible,
+.week05-page select:focus-visible {
+  outline: 3px solid #2557a7;
+  outline-offset: 3px;
+}
+
+.week09-auth-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.week09-auth-form {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+  max-width: 360px;
+  text-align: left;
+}
+
+.week09-auth-form label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.week09-auth-form label > span {
+  min-width: 64px;
+  flex-shrink: 0;
+}
+
+.week09-auth-form input {
+  flex: 1;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #c8c8c8;
+  background: transparent;
+  color: inherit;
+}
+
+@media (max-width: 480px) {
+  .week09-auth-form {
+    max-width: none;
+  }
+
+  .week09-auth-form label {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 960px) {
+  .week05-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .week05-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .week05-filters label {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .week05-header {
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .week05-header nav {
+    width: 100%;
+  }
+
+  .week05-hero {
+    min-height: 180px;
+    padding: 24px;
+  }
+
+  .week05-grid {
+    gap: 24px 12px;
   }
 }

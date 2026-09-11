@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Providers from './providers';
+import { SITE_OPENGRAPH } from '@/shared/config/site-metadata';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,8 +15,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Commerce",
-  description: "Loopers 커머스 - 4주차부터 여기에 쌓아갑니다.",
+  title: {
+    template: '%s | Commerce',
+    default: 'Commerce',
+  },
+  description: 'Loopers 커머스',
+  openGraph: SITE_OPENGRAPH,
 };
 
 export default function RootLayout({
@@ -24,7 +30,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

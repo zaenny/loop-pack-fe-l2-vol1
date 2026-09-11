@@ -8,13 +8,17 @@
   },
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/validate-env.mjs",
     "build": "next build",
     "start": "next start",
+    "size": "size-limit",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "pnpm test && pnpm lint && pnpm typecheck && pnpm build"
+    "test:e2e": "playwright test",
+    "lint:disable-reason": "node scripts/check-eslint-disable-reason.mjs",
+    "check": "pnpm test && pnpm lint && pnpm lint:disable-reason && pnpm typecheck && pnpm build"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.101.2",
@@ -24,13 +28,38 @@
     "react-dom": "19.2.4",
     "zustand": "^5.0.14"
   },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
+    "@playwright/test": "^1.62.1",
+    "@size-limit/file": "^13.0.3",
+    "@tailwindcss/postcss": "^4.3.2",
+    "@tanstack/react-query-devtools": "^5.101.4",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.5",
     "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.0.5",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-boundaries": "^7.1.0",
+    "globals": "^17.9.0",
+    "jsdom": "^30.0.1",
+    "lint-staged": "^17.3.0",
+    "msw": "^2.15.0",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "size-limit": "^13.0.3",
     "typescript": "^5",
+    "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.10"
   }
 }
